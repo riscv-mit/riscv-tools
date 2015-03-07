@@ -23,7 +23,7 @@ cp $RISCV/bin/spike $RISCV/bin/spike-vanilla
 # build with a specific tag policy
 CPPFLAGS="-D TAG_POLICY_NO_RETURN_COPY" CFLAGS="-D TAG_POLICY_NO_RETURN_COPY" build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 # copy the spike output executable, then build it again
-cp $RISCV/bin/spike-no-return-copy $RISCV/bin/spike-no-return-copy
+cp $RISCV/bin/spike $RISCV/bin/spike-no-return-copy
 
 # build vanilla spike
 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
