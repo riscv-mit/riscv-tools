@@ -15,15 +15,22 @@ build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 cp $RISCV/bin/spike $RISCV/bin/spike-vanilla
 
 # build with a specific tag policy
-rm -f --preserve-root $RISCV/bin/spike-no-return-copy
-CPPFLAGS="-D TAG_POLICY_NO_RETURN_COPY" CFLAGS="-D TAG_POLICY_NO_RETURN_COPY" build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
-# copy the spike output executable, then build it again
-cp $RISCV/bin/spike $RISCV/bin/spike-no-return-copy
+TAG_POLICIES=( "spike-no-return-copy" "spike-no-fp-arith" )
+TAG_DEFINES=( "-D TAG_POLICY_NO_RETURN_COPY" "-D TAG_POLICY_NO_FP_ARITH" )
+numPolicies=${#TAG_POLICIES[@]}
+# use for loop read all nameservers
+for (( i=0; i<${numPolicies}; i++ ));
+do
+    echo "Building $RISCV/${TAG_POLICIES[$i]}/${TAG_POLICIES[$i]}"
+    rm -rf --preserve-root "$RISCV/${TAG_POLICIES[$i]}"
+    mkdir -p "$RISCV/${TAG_POLICIES[$i]}"
+    CPPFLAGS="${TAG_DEFINES[$i]}" CFLAGS="${TAG_DEFINES[$i]}" build_project riscv-isa-sim --prefix=$RISCV/${TAG_POLICIES[$i]} --with-fesvr=$RISCV
+    mv $RISCV/${TAG_POLICIES[$i]}/bin/spike $RISCV/${TAG_POLICIES[$i]}/bin/${TAG_POLICIES[$i]}
+    ln -s $RISCV/${TAG_POLICIES[$i]}/bin/${TAG_POLICIES[$i]} $RISCV/bin/${TAG_POLICIES[$i]}
+done
 
 # build vanilla spike
-# because we don't copy libriscv, this nullifies spike-no-return-copy
-# TODO(ievans): copy libriscv in installations
-# build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
+build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 
 # don't build riscv-pk if we don't have the correct cross-compiler
 # note that this depends on having riscv64-unknown-elf-gcc in your $PATH
