@@ -15,9 +15,10 @@ build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 cp $RISCV/bin/spike $RISCV/bin/spike-vanilla
 
 # build with a specific tag policy
-TAG_POLICIES=( "spike-no-return-copy" "spike-no-fp-arith" )
-TAG_DEFINES=( "-D TAG_POLICY_NO_RETURN_COPY" "-D TAG_POLICY_NO_FP_ARITH" )
+TAG_POLICIES=( "spike-no-return-copy" "spike-no-fp-arith" "spike-no-partial-copy" )
+TAG_DEFINES=( "-D TAG_POLICY_NO_RETURN_COPY" "-D TAG_POLICY_NO_FP_ARITH" "-D TAG_POLICY_NO_PARTIAL_COPY" )
 numPolicies=${#TAG_POLICIES[@]}
+
 # use for loop read all nameservers
 for (( i=0; i<${numPolicies}; i++ ));
 do
@@ -26,6 +27,7 @@ do
     mkdir -p "$RISCV/${TAG_POLICIES[$i]}"
     CPPFLAGS="${TAG_DEFINES[$i]}" CFLAGS="${TAG_DEFINES[$i]}" build_project riscv-isa-sim --prefix=$RISCV/${TAG_POLICIES[$i]} --with-fesvr=$RISCV
     mv $RISCV/${TAG_POLICIES[$i]}/bin/spike $RISCV/${TAG_POLICIES[$i]}/bin/${TAG_POLICIES[$i]}
+    rm -f $RISCV/bin/${TAG_POLICIES[$i]}
     ln -s $RISCV/${TAG_POLICIES[$i]}/bin/${TAG_POLICIES[$i]} $RISCV/bin/${TAG_POLICIES[$i]}
 done
 
