@@ -15,8 +15,8 @@ build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 cp $RISCV/bin/spike $RISCV/bin/spike-vanilla
 
 # build with a specific tag policy
-TAG_POLICIES=( "spike-no-return-copy" "spike-no-fp-arith" "spike-no-partial-copy" )
-TAG_DEFINES=( "-D TAG_POLICY_NO_RETURN_COPY" "-D TAG_POLICY_NO_FP_ARITH" "-D TAG_POLICY_NO_PARTIAL_COPY" )
+TAG_POLICIES=( "spike-no-return-copy" "spike-no-fp-arith" "spike-no-partial-copy" "spike-fptr-tags")
+TAG_DEFINES=( "-D TAG_POLICY_NO_RETURN_COPY" "-D TAG_POLICY_NO_FP_ARITH" "-D TAG_POLICY_NO_PARTIAL_COPY" "-D TAG_POLICY_FPTR_TAGS")
 numPolicies=${#TAG_POLICIES[@]}
 
 # use for loop read all nameservers
